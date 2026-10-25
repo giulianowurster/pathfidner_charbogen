@@ -1,0 +1,557 @@
+<title>Thessalia</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=IBM+Plex+Sans+Condensed:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: dense stat-block sheet. Header band, 3-column grid (Abwehr | Angriff | Talente+Fertigkeiten), second tab: Talente | Klassenmerkmale, then Herkunft; stacks to 1 column on phones. */
+:root{
+  --paper:#f6f8f6; --panel:#ffffff; --ink:#1c2422; --muted:#5b6965; --line:#d3dbd8;
+  --jade:#2b7a69; --jade-soft:#e3f0ec; --ochre:#a8761f; --ochre-soft:#f5ead6; --bark:#7a5634; --bark-soft:#efe5dc;
+  --f-display:"Marcellus SC","Trajan Pro",Georgia,serif;
+  --f-body:"IBM Plex Sans Condensed","Roboto Condensed","Arial Narrow",sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --paper:#121816; --panel:#19201e; --ink:#e3eae7; --muted:#93a29d; --line:#2d3734;
+  --jade:#62c2ab; --jade-soft:#1d332d; --ochre:#dcaa52; --ochre-soft:#362b17; --bark:#c9a07a; --bark-soft:#30261d;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#121816; --panel:#19201e; --ink:#e3eae7; --muted:#93a29d; --line:#2d3734;
+  --jade:#62c2ab; --jade-soft:#1d332d; --ochre:#dcaa52; --ochre-soft:#362b17; --bark:#c9a07a; --bark-soft:#30261d;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font:14px/1.4 var(--f-body);
+  padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1240px;margin:0 auto;display:grid;gap:18px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance}
+h2{font-size:15px;letter-spacing:.08em;color:var(--jade);border-bottom:1.5px solid var(--jade);padding-bottom:3px;margin-bottom:8px}
+h3{font-size:12.5px;letter-spacing:.06em;color:var(--muted);margin:10px 0 4px}
+.n{font-family:var(--f-num);font-variant-numeric:tabular-nums;font-weight:600}
+.muted{color:var(--muted)}
+small,.s{font-size:12px}
+table{border-collapse:collapse;width:100%}
+td,th{padding:2px 4px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.r,th.r{text-align:right}
+.tbl{overflow-x:auto}
+
+/* header */
+header{display:grid;grid-template-columns:1fr auto;gap:12px 24px;align-items:end;border-bottom:3px double var(--line);padding-bottom:12px}
+header h1{font-size:38px;line-height:1;letter-spacing:.04em}
+.classes{font-size:15px;margin-top:4px}
+.classes b{color:var(--jade);font-weight:600}
+.bio{color:var(--muted);font-size:13px;margin-top:2px}
+.vitals{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.vital{border:1.5px solid var(--ink);border-radius:4px;padding:4px 10px;text-align:center;min-width:66px;background:var(--panel)}
+.vital .k{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.vital .v{font:600 22px/1.1 var(--f-num)}
+.vital .x{font-size:11px;color:var(--muted)}
+.vital.hp{border-color:var(--jade)}
+.vital.hp input{display:block;width:3.2ch;height:1.1em;margin:0 auto;padding:0;border:0;border-radius:3px;
+  font:inherit;line-height:inherit;text-align:center;color:var(--ink);background:var(--jade-soft);
+  -moz-appearance:textfield;appearance:textfield}
+.vital.hp input::-webkit-outer-spin-button,.vital.hp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.vital.hp input:focus-visible{outline:2px solid var(--jade);outline-offset:1px}
+
+.abil{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;grid-column:1/-1}
+.ab{display:flex;align-items:baseline;justify-content:space-between;gap:6px;border:1px solid var(--line);background:var(--panel);border-radius:4px;padding:4px 10px}
+.ab .k{font-family:var(--f-display);font-size:16px}
+.ab .sc{width:3.4ch;padding:0;border:0;border-radius:3px;font:500 16px var(--f-num);color:var(--muted);text-align:center;
+  background:var(--jade-soft);-moz-appearance:textfield;appearance:textfield}
+.ab .sc::-webkit-outer-spin-button,.ab .sc::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ab .sc:focus-visible{outline:2px solid var(--jade);outline-offset:1px;color:var(--ink)}
+.ab .md{font:600 16px var(--f-num)}
+.ab.key{border-color:var(--jade)}
+
+/* state bar */
+.state{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 12px}
+.state .lbl{font-family:var(--f-display);letter-spacing:.06em;color:var(--muted);margin-right:4px}
+.tog{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:999px;padding:3px 12px;cursor:pointer;user-select:none;font-weight:500}
+.tog input{position:absolute;opacity:0;pointer-events:none}
+.tog:focus-within{outline:2px solid var(--jade);outline-offset:2px}
+.tog .dot{width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor}
+.tog.on .dot{background:currentColor}
+.tog[data-k="enl"].on{border-color:var(--ochre);background:var(--ochre-soft);color:var(--ochre)}
+.tog[data-k="shi"].on{border-color:var(--bark);background:var(--bark-soft);color:var(--bark)}
+.tog[data-k="has"].on,.tog[data-k="mag"].on,.tog[data-k="cou"].on,.tog[data-k="def"].on{border-color:var(--jade);background:var(--jade-soft);color:var(--jade)}
+.state .hint{font-size:12px;color:var(--muted);flex:1 1 220px}
+
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 22px;align-items:start}
+.col{display:grid;gap:16px;align-content:start}
+.big{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:6px}
+.bx{border:1px solid var(--line);background:var(--panel);border-radius:4px;padding:4px 8px}
+.bx .k{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bx .v{font:600 24px/1.1 var(--f-num)}
+.bx .x{font-size:11.5px;color:var(--muted)}
+.bx.live .v{color:var(--jade)}
+.chg{color:var(--ochre)!important}
+.brk{font-size:12px;color:var(--muted);line-height:1.35}
+.brk b{color:var(--ink);font-weight:600;font-family:var(--f-num)}
+details.brk{margin-top:2px}
+details.brk summary{cursor:pointer;font-size:11.5px;letter-spacing:.04em;width:max-content}
+details.brk summary:hover{color:var(--jade)}
+details.brk summary:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
+details.brk[open] summary{margin-bottom:2px}
+.brk a{color:var(--jade)}
+
+.atk{background:var(--panel);border:1.5px solid var(--jade);border-radius:6px;padding:8px 10px}
+.atk .line{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap;padding:3px 0;border-bottom:1px solid var(--line)}
+.atk .line:last-child{border-bottom:0}
+.atk .nm{font-weight:600}
+.atk .val{font:600 16px var(--f-num)}
+.atk .dmg{font:500 13px var(--f-num);color:var(--muted)}
+.cur{background:var(--jade-soft)}
+
+.track{display:grid;gap:5px}
+.trow{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.boxes{display:flex;gap:3px;flex-wrap:wrap}
+.boxes input{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--muted);border-radius:3px;margin:0;cursor:pointer;background:var(--panel)}
+.boxes input:checked{background:var(--ink);border-color:var(--ink)}
+.boxes input:focus-visible{outline:2px solid var(--jade);outline-offset:1px}
+button{font:500 12px var(--f-body);border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;padding:3px 10px;cursor:pointer}
+button:hover{border-color:var(--jade)}
+button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
+
+.swift{border-left:3px solid var(--ochre);padding:4px 0 4px 10px;background:var(--ochre-soft);border-radius:0 4px 4px 0;font-size:12.5px}
+.swift ul{margin:4px 0 0;padding-left:16px}
+.feat td{border:0;padding:2px 12px 2px 0;vertical-align:baseline}
+.feat td:first-child{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.feat td:last-child{padding-right:0}
+.feat td span{color:var(--muted);font-size:12px}
+.feat th{border:0;padding:0;text-transform:none;letter-spacing:0;font-weight:400}
+.feat tbody + tbody th h3{margin-top:16px}
+.feat b{font-weight:600}
+.cf{margin:0;padding:0;list-style:none}
+.cf li{padding:2px 0}
+.cf + h3{margin-top:16px}
+.cf li b{font-weight:600}
+.cf li span{color:var(--muted);font-size:12px}
+.sk td:first-child{white-space:nowrap}
+.sk tr.tr td{font-weight:500}
+.sk tr:not(.tr) td{color:var(--muted)}
+.sk .cs{color:var(--jade);font-weight:600}
+.tab2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 22px;align-items:start}
+.panel{display:grid;gap:18px}
+[hidden]{display:none!important}
+.tabs{display:flex;gap:4px;border-bottom:1.5px solid var(--line);flex-wrap:wrap}
+.tabs button{font:400 14px var(--f-display);letter-spacing:.06em;border:1.5px solid transparent;border-bottom:0;border-radius:4px 4px 0 0;
+  background:none;color:var(--muted);padding:6px 14px;margin-bottom:-1.5px}
+.tabs button:hover{color:var(--jade);border-color:transparent}
+.tabs button[aria-selected="true"]{color:var(--jade);background:var(--panel);border-color:var(--line);border-bottom:1.5px solid var(--panel)}
+footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px}
+
+@media (max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tab2{grid-template-columns:1fr}}
+@media (max-width:680px){
+  .grid{grid-template-columns:1fr}
+  header{grid-template-columns:1fr}
+  .vitals{justify-content:flex-start}
+  .abil{grid-template-columns:repeat(3,1fr)}
+  header h1{font-size:30px}
+}
+@media print{
+  body{padding:0;font-size:11px}
+  .state,.no-print{display:none!important}
+  [role="tabpanel"][hidden]{display:grid!important}
+  .grid{grid-template-columns:repeat(3,1fr);gap:10px}
+}
+@media (prefers-reduced-motion:no-preference){.tog,.v{transition:color .15s,background .15s,border-color .15s}}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>Thessalia</h1>
+    <div class="classes">Stufe 9 · <b>Krieger 4</b> (Speerkrieger) · <b>Mönch 4</b> · <b>Druide 1</b> (Wachstum)</div>
+    <div class="bio">Mensch (Zenj/Mwangi) · rechtschaffen neutral · Irori · mittelgroß · 21 J. · 176 cm · 68 kg · schwarze Haut, grau-grüne Augen</div>
+  </div>
+  <div class="vitals">
+    <div class="vital hp"><div class="k">TP</div><div class="v"><input id="hp" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" value="73" aria-label="Aktuelle Trefferpunkte"></div><div class="x">max <span data-ab="con" data-mul="9">73</span></div></div>
+    <div class="vital"><div class="k">Initiative</div><div class="v"><span data-ab="dex">+9</span></div><div class="x">1. am Tag <span data-ab="dex">+14</span></div></div>
+    <div class="vital"><div class="k">Bewegung</div><div class="v" id="spd">12 m</div><div class="x" id="spdx">8 Felder</div></div>
+    <div class="vital"><div class="k">Reichweite</div><div class="v" id="rch">1 Feld</div><div class="x" id="rchx">+1 groß, +1 SDS</div></div>
+  </div>
+  <div class="abil">
+    <div class="ab"><span class="k">ST</span><input class="sc" id="ab-str" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" value="12" data-def="12" aria-label="ST-Wert"><span class="md" id="strM">+1</span></div>
+    <div class="ab key"><span class="k">GE</span><input class="sc" id="ab-dex" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" value="20" data-def="20" aria-label="GE-Wert"><span class="md" id="dexM">+5</span></div>
+    <div class="ab"><span class="k">KO</span><input class="sc" id="ab-con" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" value="14" data-def="14" aria-label="KO-Wert"><span class="md" id="conM">+2</span></div>
+    <div class="ab"><span class="k">IN</span><input class="sc" id="ab-int" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" value="9" data-def="9" aria-label="IN-Wert"><span class="md" id="intM">−1</span></div>
+    <div class="ab key"><span class="k">WE</span><input class="sc" id="ab-wis" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" value="18" data-def="18" aria-label="WE-Wert"><span class="md" id="wisM">+4</span></div>
+    <div class="ab"><span class="k">CH</span><input class="sc" id="ab-cha" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" value="8" data-def="8" aria-label="CH-Wert"><span class="md" id="chaM">−1</span></div>
+  </div>
+</header>
+
+<div class="tabs no-print" role="tablist" aria-label="Ansicht">
+  <button type="button" role="tab" id="tab-kampf" aria-controls="p-kampf" aria-selected="true">Kampf</button>
+  <button type="button" role="tab" id="tab-tal" aria-controls="p-tal" aria-selected="false" tabindex="-1">Talente &amp; Klassenmerkmale</button>
+</div>
+
+<div class="panel" role="tabpanel" id="p-kampf" aria-labelledby="tab-kampf">
+<div class="state no-print" role="group" aria-label="Zustand">
+  <span class="lbl">Zustand</span>
+  <label class="tog" data-k="enl"><input type="checkbox" id="t-enl"><span class="dot"></span>Vergrößert</label>
+  <label class="tog" data-k="shi"><input type="checkbox" id="t-shi"><span class="dot"></span>Shillelagh</label>
+  <label class="tog" data-k="has"><input type="checkbox" id="t-has"><span class="dot"></span>Hast</label>
+  <label class="tog" data-k="mag"><input type="checkbox" id="t-mag"><span class="dot"></span>Magierrüstung</label>
+  <label class="tog" data-k="cou"><input type="checkbox" id="t-cou"><span class="dot"></span>Lied des Mutes</label>
+  <label class="tog" data-k="def"><input type="checkbox" id="t-def"><span class="dot"></span>Defensiv kämpfen</label>
+  <span class="hint">Schalter aktualisieren Angriff, Schaden, RK, KMB/KMV, Reflex, Bewegung und Reichweite. Speertanzstil ist immer als aktiv angenommen.</span>
+</div>
+
+<div class="grid">
+
+<!-- ========== ABWEHR ========== -->
+<div class="col">
+<section>
+  <h2>Abwehr</h2>
+  <div class="big">
+    <div class="bx live"><div class="k">RK</div><div class="v" id="ac">24</div></div>
+    <div class="bx live"><div class="k">Berührung</div><div class="v" id="tac">22</div></div>
+    <div class="bx live"><div class="k">Fl. Fuß</div><div class="v" id="ffac">18</div></div>
+  </div>
+  <details class="brk"><summary>Aufschlüsselung</summary>10 + 2 Schildring + 1 Ablenkung (Ring) + <span data-ab="dex">5</span> GE + <span data-ab="wis">4</span> WE + 1 Mönch + 1 Ausweichen
+  <br>Berührung: ohne Schildring · Fl. Fuß: ohne GE und Ausweichen
+  <br>Vergrößert −2 (Größe, GE) · Hast +1 Ausweichen · Magierrüstung +4 (nicht Berührung) · Defensiv kämpfen +3 Ausweichen, −4 Angriff · Ki: +4 Ausweichen (schnelle Aktion)
+  <br>Alle Boni haben verschiedene Typen oder sind Ausweichboni und stapeln daher</details>
+
+  <h3>Rettungswürfe</h3>
+  <div class="big">
+    <div class="bx"><div class="k">Zähigkeit</div><div class="v"><span data-ab="con">+13</span></div></div>
+    <div class="bx live"><div class="k">Reflex</div><div class="v" id="ref">+11</div></div>
+    <div class="bx"><div class="k">Wille</div><div class="v"><span data-ab="wis">+12</span></div></div>
+  </div>
+  <details class="brk"><summary>Aufschlüsselung</summary>Basis 10/5/7 (Krieger 4/1/1 · Druide 2/0/2 · Mönch 4/4/4)
+  <br>+ Attribute <span data-ab="con">2</span>/<span data-ab="dex">5</span>/<span data-ab="wis">4</span> + Umhang +1
+  <br>+2 gegen Verzauberung (Ruhiger Geist) · Entrinnen: gelungener Reflexwurf = kein Schaden</details>
+
+  <h3>Kampfmanöver</h3>
+  <div class="big">
+    <div class="bx live"><div class="k">KMB</div><div class="v" id="cmb">+9</div><div class="x">ST-basiert</div></div>
+    <div class="bx live"><div class="k">mit Waffe</div><div class="v" id="wcmb">+15</div><div class="x">Entw./Zerschm./Zu Fall</div></div>
+    <div class="bx live"><div class="k">KMV</div><div class="v" id="cmd">30</div></div>
+  </div>
+  <details class="brk"><summary>Aufschlüsselung</summary>KMB: GAB 8 (Manövertraining) + ST · mit Tepoztopilli: + GE (Finesse) + WF + meisterhaft
+  <br>KMV: 10 + GAB 7 + ST <span data-ab="str">1</span> + GE <span data-ab="dex">5</span> + WE <span data-ab="wis">4</span> + Mönch 1 + Ausweichen 1 + Ablenkung 1</details>
+</section>
+
+<section>
+  <h2>Tagesressourcen</h2>
+  <div class="track" id="track">
+    <div class="trow"><span>Ki-Punkte</span><span class="boxes" data-n="6" data-ab="wis" data-id="ki"></span></div>
+    <div class="trow"><span>Betäubender Schlag <small class="muted">SG <span data-ab="wis">18</span></small></span><span class="boxes" data-n="5" data-id="stun"></span></div>
+    <div class="trow"><span>Vergrößern (Su) <small class="muted">je 1 Runde</small></span><span class="boxes" data-n="7" data-ab="wis" data-id="enl"></span></div>
+    <div class="trow"><span>Stirnband: Furcht −1 Stufe</span><span class="boxes" data-n="3" data-id="fear"></span></div>
+    <div class="trow"><span>Shillelagh <small class="muted">1 min</small></span><span class="boxes" data-n="2" data-id="shi" id="trk-shi"></span></div>
+    <div class="trow"><span>Perle der Macht (Grad 1)</span><span class="boxes" data-n="1" data-id="pearl"></span></div>
+    <div class="trow"><span>Person vergrößern <small class="muted">Domäne, 1 min</small></span><span class="boxes" data-n="1" data-id="ep"></span></div>
+    <div class="trow"><span>Talisman Gefahrenspür</span><span class="boxes" data-n="1" data-id="tal"></span></div>
+    <div class="trow no-print"><span></span><button type="button" id="reset">Neuer Tag</button></div>
+  </div>
+</section>
+
+<section>
+  <h2>Schnelle Aktion: nur eine pro Runde</h2>
+  <div class="swift">
+    Alle diese Optionen konkurrieren um dieselbe Aktion:
+    <ul>
+      <li><b>Vergrößern (Su)</b>, 1 Runde</li>
+      <li><b>Ki</b>: Extra-Angriff im Schlaghagel / +4 RK / +6 m</li>
+      <li><b>Speertanzreichweite</b></li>
+      <li><b>Speertanzstil einnehmen</b> (1. Runde)</li>
+      <li><b>Speerparade</b> und <b>Stirnband</b> (Furcht) als sofortige Aktion verbrauchen die nächste schnelle Aktion</li>
+    </ul>
+  </div>
+</section>
+</div>
+
+<!-- ========== ANGRIFF ========== -->
+<div class="col">
+<section>
+  <h2>Angriff</h2>
+  <div class="big">
+    <div class="bx"><div class="k">GAB</div><div class="v">+7</div><div class="x">K4 · D0 · M3</div></div>
+    <div class="bx"><div class="k">Schlaghagel-GAB</div><div class="v">+8</div><div class="x">Mönch-Stufe zählt voll</div></div>
+    <div class="bx"><div class="k">AoO</div><div class="v" id="aoo">6</div><div class="x">Kampfreflexe</div></div>
+  </div>
+
+  <div class="atk" aria-live="polite">
+    <div class="line"><span class="nm">Tepoztopilli, Einzelangriff</span><span class="val" id="a-single">+14</span></div>
+    <div class="line"><span class="dmg">Voller Angriff</span><span class="dmg" id="a-full">+14 / +9</span></div>
+    <div class="line"><span class="nm">Schlaghagel</span><span class="val" id="a-flurry">+13 / +13 / +8</span></div>
+    <div class="line"><span class="dmg">+1 Ki</span><span class="dmg" id="a-ki">weiterer Angriff +13</span></div>
+    <div class="line"><span class="nm">Schaden</span><span class="val" id="a-dmg">1d10+3</span></div>
+    <div class="line"><span class="dmg">Schaden im Schlaghagel</span><span class="dmg" id="a-dmgf">1d10+3</span></div>
+    <div class="line"><span class="dmg">Krit · Typ</span><span class="dmg" id="a-crit">19–20 / ×2 · S oder P</span></div>
+  </div>
+
+  <h3>Schaden nach Zustand</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Zustand</th><th class="r">Einzeln (1,5× ST)</th><th class="r">Schlaghagel</th><th>Typ</th></tr></thead>
+    <tbody class="n" id="dmgtab">
+      <tr data-row="0"><td>normal</td><td class="r">1d10+3</td><td class="r">1d10+3</td><td>S/P</td></tr>
+      <tr data-row="1"><td>vergrößert</td><td class="r">2d8+5</td><td class="r">2d8+4</td><td>S/P</td></tr>
+      <tr data-row="2"><td>Shillelagh</td><td class="r">3d8+4</td><td class="r">3d8+4</td><td>W</td></tr>
+      <tr data-row="3"><td>beides</td><td class="r">4d8+6</td><td class="r">4d8+5</td><td>W</td></tr>
+    </tbody>
+  </table></div>
+  <details class="brk"><summary>Aufschlüsselung</summary>Angriff: GAB + <span data-ab="dex">5</span> GE (Finesse über Speertanzspirale) + 1 WF
+  <br>+ 1 meisterhaft (oder Shillelagh +1, stapelt nicht)
+  <br>Schaden inkl. +2 Waffenspezialisierung, Shillelagh +1 · Shillelagh zählt 2 Größen größer, stapelt mit Vergrößern
+  <br>Hast + Schlaghagel stapeln: Schlaghagel ist ein voller Angriff (<a href="https://www.d20pfsrd.com/classes/core-classes/monk/" target="_blank" rel="noopener">Mönch</a>), Hast gibt bei vollem Angriff +1 Angriff (<a href="https://www.d20pfsrd.com/magic/all-spells/h/haste/" target="_blank" rel="noopener">Hast</a>)
+  <br>Ki + Hast stapeln: beide Extra-Angriffe im Schlaghagel (<a href="https://paizo.com/paizo/faq/v5748nruor1fm#v5748eaic9qk0" target="_blank" rel="noopener">Paizo-FAQ</a>)
+  <br>Schlaghagel-GAB 8 = Mönch 4 (Mönchstufe) + Krieger 4; 1 Extra-Angriff bis Mönch 7 → +13 / +13 / +8 (<a href="https://aonprd.com/FAQs.aspx" target="_blank" rel="noopener">Paizo-FAQ, Mönch</a>)</details>
+
+  <h3>Weitere Angriffe</h3>
+  <div class="tbl"><table>
+    <tbody>
+      <tr><td>Kurzbogen <small class="muted">(meisterhaft)</small></td><td class="r n" id="a-bow">+13 / +8</td><td class="r n">1d6</td><td class="n">×3</td></tr>
+      <tr><td>Waffenloser Schlag</td><td class="r n" id="a-ua">+12 / +7</td><td class="r n">1d8+1</td><td class="n">×2</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Zauber · Druide 1</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Grad</th><th class="r">SG</th><th>Plätze</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td class="r"><span data-ab="wis">14</span></td><td>3 Orisons (beliebig oft)</td></tr>
+      <tr><td>1</td><td class="r"><span data-ab="wis">15</span></td><td><span id="sl1">2</span>× Shillelagh (1 + <span id="sl1b">1</span> Bonus durch WE) + 1 Perle · Domäne: Person vergrößern</td></tr>
+    </tbody>
+  </table></div>
+  <div class="brk" style="margin-top:4px">ZS 1 · Spontan: vorbereiteten Zauber in <i>Naturverbündeten herbeizaubern</i> umwandeln</div>
+</section>
+</div>
+
+<!-- ========== FERTIGKEITEN ========== -->
+<div class="col">
+<section>
+  <h2>Fertigkeiten</h2>
+  <div class="tbl"><table class="sk">
+    <thead><tr><th>Fertigkeit</th><th class="r">Ges.</th><th class="r">Rg</th><th>Notiz</th></tr></thead>
+    <tbody class="n">
+      <tr class="tr"><td>Akrobatik <span class="cs">•</span></td><td class="r"><span data-ab="dex">+13</span></td><td class="r">5</td><td class="s"><span data-ab="dex">+14</span> gegen AoO</td></tr>
+      <tr><td>Auftreten</td><td class="r"><span data-ab="cha">−1</span></td><td class="r">–</td><td></td></tr>
+      <tr class="tr"><td>Beruf: Tänzerin <span class="cs">•</span></td><td class="r"><span data-ab="wis">+8</span></td><td class="r">1</td><td></td></tr>
+      <tr><td>Bluffen</td><td class="r"><span data-ab="cha">−1</span></td><td class="r">–</td><td></td></tr>
+      <tr><td>Diplomatie</td><td class="r"><span data-ab="cha">−1</span></td><td class="r">–</td><td></td></tr>
+      <tr><td>Einschüchtern</td><td class="r"><span data-ab="cha">−1</span></td><td class="r">–</td><td></td></tr>
+      <tr><td>Entfesselung <span class="cs">•</span></td><td class="r"><span data-ab="dex">+5</span></td><td class="r">–</td><td></td></tr>
+      <tr><td>Fingerfertigkeit</td><td class="r"><span data-ab="dex">+5</span></td><td class="r">–</td><td class="s">nur geübt</td></tr>
+      <tr><td>Fliegen <span class="cs">•</span></td><td class="r"><span data-ab="dex">+5</span></td><td class="r">–</td><td></td></tr>
+      <tr><td>Handwerk</td><td class="r"><span data-ab="int">−1</span></td><td class="r">–</td><td></td></tr>
+      <tr><td>Heilkunde <span class="cs">•</span></td><td class="r"><span data-ab="wis">+4</span></td><td class="r">–</td><td></td></tr>
+      <tr class="tr"><td>Heimlichkeit <span class="cs">•</span></td><td class="r"><span data-ab="dex">+10</span></td><td class="r">2</td><td class="s">vergrößert −5</td></tr>
+      <tr class="tr"><td>Klettern <span class="cs">•</span></td><td class="r"><span data-ab="str">+6</span></td><td class="r">2</td><td></td></tr>
+      <tr><td>Mechanismus</td><td class="r"><span data-ab="dex">+5</span></td><td class="r">–</td><td class="s">nur geübt</td></tr>
+      <tr class="tr"><td>Mit Tieren umgehen <span class="cs">•</span></td><td class="r"><span data-ab="cha">+3</span></td><td class="r">1</td><td></td></tr>
+      <tr><td>Motiv erkennen <span class="cs">•</span></td><td class="r"><span data-ab="wis">+4</span></td><td class="r">–</td><td></td></tr>
+      <tr><td>Reiten <span class="cs">•</span></td><td class="r"><span data-ab="dex">+5</span></td><td class="r">–</td><td></td></tr>
+      <tr><td>Schätzen</td><td class="r"><span data-ab="int">−1</span></td><td class="r">–</td><td></td></tr>
+      <tr class="tr"><td>Schwimmen <span class="cs">•</span></td><td class="r"><span data-ab="str">+5</span></td><td class="r">1</td><td></td></tr>
+      <tr class="tr"><td>Überlebenskunst <span class="cs">•</span></td><td class="r"><span data-ab="wis">+10</span></td><td class="r">1</td><td></td></tr>
+      <tr><td>Verkleiden</td><td class="r"><span data-ab="cha">−1</span></td><td class="r">–</td><td></td></tr>
+      <tr class="tr"><td>Wahrnehmung <span class="cs">•</span></td><td class="r"><span data-ab="wis">+16</span></td><td class="r">9</td><td></td></tr>
+      <tr class="tr"><td>Wissen (Die Ebenen)</td><td class="r"><span data-ab="int">+0</span></td><td class="r">1</td><td></td></tr>
+      <tr class="tr"><td>Wissen (Gewölbe) <span class="cs">•</span></td><td class="r"><span data-ab="int">+3</span></td><td class="r">1</td><td></td></tr>
+      <tr class="tr"><td>Wissen (Lokales) <span class="cs">•</span></td><td class="r"><span data-ab="int">+3</span></td><td class="r">1</td><td></td></tr>
+      <tr class="tr"><td>Wissen (Natur) <span class="cs">•</span></td><td class="r"><span data-ab="int">+5</span></td><td class="r">1</td><td></td></tr>
+      <tr class="tr"><td>Wissen (Religion) <span class="cs">•</span></td><td class="r"><span data-ab="int">+3</span></td><td class="r">1</td><td></td></tr>
+      <tr class="tr"><td>Zauberkunde <span class="cs">•</span></td><td class="r"><span data-ab="int">+3</span></td><td class="r">1</td><td></td></tr>
+    </tbody>
+  </table></div>
+  <div class="brk"><span class="cs">•</span> Klassenfertigkeit (+3 ab 1 Rang)</div>
+</section>
+</div>
+
+</div>
+
+</div>
+
+<!-- ========== TALENTE & KLASSENMERKMALE ========== -->
+<div class="panel" role="tabpanel" id="p-tal" aria-labelledby="tab-tal" hidden>
+<div class="tab2">
+<section>
+  <h2>Talente</h2>
+  <div class="tbl"><table class="feat">
+    <tbody>
+      <tr><th colspan="2"><h3>Allgemein (nach Stufe)</h3></th></tr>
+      <tr><td>Stufe 1</td><td><b>Waffenfinesse</b> <span>GE auf Angriff mit leichten Waffen</span></td></tr>
+      <tr><td>Stufe 3</td><td><b>Speertanzspirale</b> <span>Finesse mit Tepoztopilli; Kampfstab-Talente und -Fähigkeiten nutzbar</span></td></tr>
+      <tr><td>Stufe 5</td><td><b>Verbesserte Initiative</b> <span>+4 Initiative</span></td></tr>
+      <tr><td>Stufe 7</td><td><b>Waffenspezialisierung</b> (Tepoztopilli) <span>+2 Schaden</span></td></tr>
+      <tr><td>Stufe 9</td><td><b>Abhärtung</b> <span>+9 TP</span></td></tr>
+    </tbody>
+    <tbody>
+      <tr><th colspan="2"><h3>Bonustalente (Rasse und Klassen)</h3></th></tr>
+      <tr><td>Mensch</td><td><b>Waffenfokus</b> (Tepoztopilli) <span>+1 Angriff</span></td></tr>
+      <tr><td>Krieger 1</td><td><b>Kampf mit zwei Waffen</b> <span>−2/−2 mit Doppelwaffe</span></td></tr>
+      <tr><td>Krieger 1</td><td><b>Ausweichen</b> (Speerkrieger) <span>+1 RK, nicht mit Schild</span></td></tr>
+      <tr><td>Krieger 2</td><td><b>Speertanzstil</b> <span>Doppelwaffe (Ende 2 = leichter Streitkolben), verliert Reichweite</span></td></tr>
+      <tr><td>Krieger 4</td><td><b>Speertanzreichweite</b> <span>schnelle Aktion: Reichweite bei vollem Angriff (GE 17)</span></td></tr>
+      <tr><td>Mönch 1</td><td><b>Verbesserter waffenloser Schlag</b></td></tr>
+      <tr><td>Mönch 1</td><td><b>Betäubender Schlag</b> <span>5/Tag, Zäh SG <span data-ab="wis">18</span>: 1 Runde betäubt</span></td></tr>
+      <tr><td>Mönch 1</td><td><b>Kampfreflexe</b> <span>AoO = 1 + GE-Mod.; auch auf dem falschen Fuß</span></td></tr>
+      <tr><td>Mönch 2</td><td><b>Geschosse abwehren</b> <span>1/Runde Fernkampftreffer abwehren, braucht freie Hand</span></td></tr>
+    </tbody>
+    <tbody>
+      <tr><th colspan="2"><h3>Wesenszug</h3></th></tr>
+      <tr><td>Kampagne</td><td><b>Familienbande</b> <span>Wissen (Lokales) +1, Klassenfertigkeit</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Klassenmerkmale</h2>
+  <div class="tbl"><table class="feat">
+    <tbody>
+      <tr><th colspan="2"><h3>Krieger 4 (Speerkrieger)</h3></th></tr>
+      <tr><td>Krieger 2</td><td><b>Ausgeglichenes Schreiten</b> <span>+1 Akrobatik gegen AoO</span></td></tr>
+      <tr><td>Krieger 3</td><td><b>Speerparade</b> <span>AoO verbrauchen: eigener Angriffswurf gegen den feindlichen; Erfolg = Angriff verfehlt, Gegenangriff als sofortige Aktion; danach kumulativ −4 Angriff bis Ende des nächsten Zuges</span></td></tr>
+    </tbody>
+    <tbody>
+      <tr><th colspan="2"><h3>Mönch 4</h3></th></tr>
+      <tr><td>Mönch 1</td><td><b>RK-Bonus</b> <span>+WE, +1; auch berührend und auf dem falschen Fuß; nicht mit Rüstung, Schild oder mittlerer Last</span></td></tr>
+      <tr><td>Mönch 1</td><td><b>Schlaghagel</b> <span>+1 Angriff, −2 auf alle; volle ST auf jeden Treffer; Angriff durch Entwaffnen, Zerschmettern oder Zu Fall ersetzbar</span></td></tr>
+      <tr><td>Mönch 2</td><td><b>Entrinnen</b> <span>gelungener Reflexwurf = kein Schaden</span></td></tr>
+      <tr><td>Mönch 3</td><td><b>Schnelle Bewegung</b> <span>+3 m</span></td></tr>
+      <tr><td>Mönch 3</td><td><b>Manövertraining</b> <span>KMB mit Mönch-Stufe als GAB</span></td></tr>
+      <tr><td>Mönch 3</td><td><b>Ruhiger Geist</b> <span>+2 RW gegen Verzauberung</span></td></tr>
+      <tr><td>Mönch 4</td><td><b>Ki-Vorrat</b> <span>6 Punkte; waffenlose Schläge magisch</span></td></tr>
+      <tr><td>Mönch 4</td><td><b>Langsamer Fall</b> <span>6 m weniger Fallschaden an einer Wand</span></td></tr>
+    </tbody>
+    <tbody>
+      <tr><th colspan="2"><h3>Druide 1 (Wachstum)</h3></th></tr>
+      <tr><td>Druide 1</td><td><b>Vergrößern (Su)</b> <span>schnelle Aktion, 1 Runde, 7/Tag: ST +2, GE −2, −1 Angriff und RK, Reichweite 2 Felder, Heimlichkeit −4</span></td></tr>
+      <tr><td>Druide 1</td><td><b>Zauber</b> <span>siehe Zauber; Domänenplatz: Person vergrößern</span></td></tr>
+      <tr><td>Druide 1</td><td><b>Naturgespür</b> <span>+2 Wissen (Natur) und Überlebenskunst</span></td></tr>
+      <tr><td>Druide 1</td><td><b>Tierempathie</b> <span>1d20 <span data-ab="cha">+0</span></span></td></tr>
+      <tr><td>Druide 1</td><td><b>Druidisch</b> <span>Geheimsprache</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+</div>
+<!-- ========== HERKUNFT ========== -->
+<section>
+  <h2>Herkunft</h2>
+  <div class="brk"><b style="font-family:var(--f-body)">Sprachen:</b> Gemeinsprache, Mwangi, Druidisch</div>
+  <h3>Iroris Lehren</h3>
+  <ul class="cf s">
+    <li>Akzeptanz und Gleichmut gegenüber anderen</li>
+    <li>Was klaren Geist oder starken Körper schwächt (Krankheit, Rauschmittel), ist Sünde</li>
+    <li>Contenance</li>
+    <li>Zerstörung historischer Texte und Zeugnisse meiden (für Thessalia nachrangig)</li>
+  </ul>
+</section>
+</div>
+
+<footer>Pathfinder 1e · Regeln geprüft gegen d20pfsrd.com</footer>
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const sg=n=>(n>=0?"+":"−")+Math.abs(n);
+  const store={get(k,d){try{const v=localStorage.getItem("thes-"+k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+               set(k,v){try{localStorage.setItem("thes-"+k,JSON.stringify(v))}catch(e){}}};
+
+  // Zahlenfelder: nur Ziffern zulassen
+  document.querySelectorAll('input[inputmode="numeric"]').forEach(el=>el.addEventListener("input",()=>{
+    const v=el.value.replace(/\D/g,"");if(v!==el.value)el.value=v;},true));
+
+  // trackers
+  function boxes(b,n){
+    if(b.children.length===n)return;
+    const id=b.dataset.id,saved=store.get("trk-"+id,[]);b.textContent="";
+    for(let i=0;i<n;i++){const c=document.createElement("input");c.type="checkbox";c.id="trk-"+id+"-"+i;
+      c.setAttribute("aria-label",id+" "+(i+1));c.checked=!!saved[i];
+      c.addEventListener("change",()=>store.set("trk-"+id,[...b.querySelectorAll("input")].map(x=>x.checked)));b.appendChild(c);}
+  }
+  document.querySelectorAll(".boxes").forEach(b=>boxes(b,+b.dataset.n));
+  $("reset").addEventListener("click",()=>{document.querySelectorAll(".boxes input").forEach(c=>c.checked=false);
+    document.querySelectorAll(".boxes").forEach(b=>store.set("trk-"+b.dataset.id,[]));});
+  const hp=$("hp");hp.value=store.get("hp",73);hp.addEventListener("input",()=>store.set("hp",hp.value));
+
+  // tabs
+  const tabs=[...document.querySelectorAll('[role="tab"]')];
+  function show(t){tabs.forEach(x=>{const on=x===t;x.setAttribute("aria-selected",on);x.tabIndex=on?0:-1;
+    $(x.getAttribute("aria-controls")).hidden=!on;});store.set("tab",t.id);}
+  tabs.forEach((t,i)=>{t.addEventListener("click",()=>show(t));
+    t.addEventListener("keydown",e=>{const d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;
+      if(d){const n=tabs[(i+d+tabs.length)%tabs.length];show(n);n.focus();}});});
+  show($(store.get("tab","tab-kampf"))||tabs[0]);
+
+  // attributes: Eingabe = Grundwert; [data-ab] = Werte, die mit dem Modifikator mitwachsen (Basis bei Standardwerten)
+  const mod=v=>Math.floor((v-10)/2);
+  const ABS=["str","dex","con","int","wis","cha"];
+  const abIn=Object.fromEntries(ABS.map(k=>[k,$("ab-"+k)]));
+  ABS.forEach(k=>{const el=abIn[k];el.value=store.get("ab-"+k,el.dataset.def);
+    el.addEventListener("input",()=>{store.set("ab-"+k,el.value);render();});});
+  const score=k=>{const v=parseInt(abIn[k].value,10);return isNaN(v)?+abIn[k].dataset.def:v;};
+  const num=t=>+t.replace("−","-");
+  document.querySelectorAll("span[data-ab]").forEach(e=>e.dataset.base=e.textContent);
+  function scaleAb(){
+    const d=Object.fromEntries(ABS.map(k=>[k,mod(score(k))-mod(+abIn[k].dataset.def)]));
+    document.querySelectorAll("span[data-ab]").forEach(e=>{const b=e.dataset.base,v=num(b)+d[e.dataset.ab]*(+e.dataset.mul||1);
+      e.textContent=/^[+−]/.test(b)?sg(v):String(v).replace("-","−");});
+    document.querySelectorAll(".boxes[data-ab]").forEach(b=>boxes(b,Math.max(0,+b.dataset.n+d[b.dataset.ab])));
+    ["con","int","wis","cha"].forEach(k=>$(k+"M").textContent=sg(mod(score(k))));
+    // Druide 1, Grad 1: 1 Platz + Bonuszauber (1 ab WE-Mod +1, je +4 ein weiterer); Zaubern erst ab WE 11
+    const w=score("wis"),wb=mod(w)>=1?1+Math.floor((mod(w)-1)/4):0,sl=w>=11?1+wb:0;
+    $("sl1").textContent=sl;$("sl1b").textContent=wb;boxes($("trk-shi"),sl);
+  }
+
+  // state
+  const T={enl:$("t-enl"),shi:$("t-shi"),has:$("t-has"),mag:$("t-mag"),cou:$("t-cou"),def:$("t-def")};
+  Object.entries(T).forEach(([k,el])=>{el.checked=!!store.get("st-"+k,false);
+    el.addEventListener("change",()=>{store.set("st-"+k,el.checked);render();});});
+
+  const DICE=["1d10","2d8","3d8","4d8"];
+  function set(id,txt,changed){const e=$(id);e.textContent=txt;e.classList.toggle("chg",!!changed);}
+  function render(){
+    const E=T.enl.checked,S=T.shi.checked,H=T.has.checked,M=T.mag.checked?4:0,C=T.cou.checked?2:0; // Lied des Mutes, Barde 9: +2 Moral auf Angriff und Waffenschaden
+    const D=T.def.checked; // Defensiv kämpfen: −4 Angriff, +3 Ausweichen (Akrobatik ≥ 3 Ränge)
+    const dA=D?-4:0,dAC=D?3:0;
+    document.querySelectorAll(".tog").forEach(t=>t.classList.toggle("on",t.querySelector("input").checked));
+    scaleAb();
+    const str=score("str")+(E?2:0),dex=score("dex")-(E?2:0),sM=mod(str),dM=mod(dex),wM=mod(score("wis")),size=E?-1:0,h=H?1:0;
+    set("strM",sg(sM),E);set("dexM",sg(dM),E);
+    // attacks
+    const A=E||H||C||D;
+    const base=dM+1+1+size+h+C+dA; // WF + mw/shillelagh
+    const single=7+base, fl=8-2+base;
+    set("a-single",sg(single),A);
+    set("a-full",[single,single-5].concat(H?[single]:[]).sort((a,b)=>b-a).map(sg).join(" / "),A);
+    set("a-flurry",[fl,fl,fl-5].concat(H?[fl]:[]).sort((a,b)=>b-a).map(sg).join(" / "),A);
+    set("a-ki",E?"nicht möglich: schnelle Aktion für Vergrößern":"weiterer Angriff "+sg(fl),A);
+    const idx=(E?1:0)+(S?2:0),dice=DICE[idx],plus=2+(S?1:0)+C;
+    set("a-dmg",dice+sg(Math.floor(sM*1.5)+plus),E||S||C);
+    set("a-dmgf",dice+sg(sM+plus),E||S||C);
+    set("a-crit","19–20 / ×2 · "+(S?"W (Shillelagh)":"S oder P"),S);
+    document.querySelectorAll("#dmgtab tr").forEach(r=>r.classList.toggle("cur",+r.dataset.row===idx));
+    const bow=7+dM+1+size+h+C+dA; set("a-bow",[bow,bow-5].concat(H?[bow]:[]).sort((a,b)=>b-a).map(sg).join(" / "),A);
+    const uaF=7+dM+size+h+C+dA; // Waffenfinesse gilt auch für waffenlose Schläge
+    set("a-ua",sg(uaF)+" / "+sg(uaF-5),A);
+    // defense
+    // RK: 10 + Schildring 2 + Ablenkung 1 + GE + WE + Mönch 1 + Ausweichen 1
+    // Magierrüstung: +4 Rüstung (Kraft, kein getragener Panzer: Mönch-RK-Bonus bleibt), nicht gegen Berührung
+    // Ausweichboni (Talent, Hast, defensiv) stapeln untereinander und mit allem anderen; entfallen auf dem falschen Fuß
+    set("ac",15+dM+wM+size+h+M+dAC,E||H||M||D); set("tac",13+dM+wM+size+h+dAC,E||H||D); set("ffac",14+wM+size+M,E||M);
+    set("ref",sg(6+dM+h),E||H);
+    // Angriffsboni und -mali (Hast, Lied des Mutes, defensiv kämpfen) gelten auch für den KMB
+    const cmbX=(E?1:0)+h+C+dA;
+    set("cmb",sg(8+sM+cmbX),E||H||C||D); set("wcmb",sg(8+dM+1+1+cmbX),E||H||C||D);
+    // KMV: 10 + GAB 7 + WE + Mönch 1 + Ausweichen 1 + Ablenkung 1 + ST + GE (+1 groß)
+    set("cmd",20+wM+sM+dM+(E?1:0)+h+dAC,E||H||D);
+    set("aoo",1+dM,E);
+    // movement & reach
+    set("spd",H?"21 m":"12 m",H); set("spdx",H?"14 Felder (Hast)":"8 Felder",H);
+    set("rch",E?"2 Felder":"1 Feld",E); 
+  }
+  render();
+})();
+</script>
